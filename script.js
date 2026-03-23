@@ -49,11 +49,6 @@ function processCSV(csvContent) {
     const descIdx = header.findIndex(col => col.trim().toLowerCase() === 'description');
     const closedDateIdx = header.findIndex(col => col.trim().toLowerCase() === 'closed date');
 
-    if (titleIdx === -1 || descIdx === -1 || closedDateIdx === -1) {
-        showStatus('Error: Required columns not found (Title, Description, Closed date)', 'error');
-        return;
-    }
-
     // Process rows
     const cleanedRows = [];
     let validRows = 0;
@@ -65,24 +60,18 @@ function processCSV(csvContent) {
 
         const columns = parseCSVLine(line);
         
-        // Check if row has enough columns
-        if (columns.length <= Math.max(titleIdx, descIdx, closedDateIdx)) {
-            invalidRows++;
-            continue;
-        }
+        const title = titleIdx !== -1 && columns[titleIdx] ? columns[titleIdx].trim() : '';
+        const description = descIdx !== -1 && columns[descIdx] ? columns[descIdx].trim() : '';
+        const closedDate = closedDateIdx !== -1 && columns[closedDateIdx] ? columns[closedDateIdx].trim() : '';
 
-        const title = columns[titleIdx]?.trim();
-        const description = columns[descIdx]?.trim();
-        const closedDate = columns[closedDateIdx]?.trim();
-
-        // Validate row has required data
-        if (!title || !description || !closedDate) {
+        // Validate row has at least some data
+        if (!title && !description && !closedDate) {
             invalidRows++;
             continue;
         }
 
         // Clean HTML from description
-        const cleanedDescription = removeHTMLTags(description);
+        const cleanedDescription = description ? removeHTMLTags(description) : '';
 
         cleanedRows.push({
             Title: title,
