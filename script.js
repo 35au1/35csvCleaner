@@ -124,11 +124,15 @@ function parseCSVLine(line) {
 }
 
 function removeHTMLTags(text) {
-    // Remove HTML tags and replace with space
-    let cleaned = text.replace(/<[^>]*>/g, ' ');
+    // Remove HTML tags - handle multiline and broken tags with any characters inside
+    // This regex matches < followed by any characters (including newlines, spaces, etc.) until >
+    let cleaned = text.replace(/<[^>]*>/gs, ' ');
+    // Also handle broken tags that might span multiple lines or have weird characters
+    cleaned = cleaned.replace(/<[\s\S]*?>/g, ' ');
     // Replace &nbsp; and other HTML entities with space
     cleaned = cleaned.replace(/&nbsp;/gi, ' ');
     cleaned = cleaned.replace(/&[a-z]+;/gi, ' ');
+    cleaned = cleaned.replace(/&#\d+;/g, ' ');
     // Normalize multiple spaces to single space
     cleaned = cleaned.replace(/\s+/g, ' ');
     return cleaned.trim();
