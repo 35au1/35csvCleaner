@@ -130,16 +130,15 @@ function removeHTMLTags(text) {
 
 function generateCSV(rows) {
     const headers = ['Title', 'Description', 'Closed date'];
-    let csv = headers.join(',') + '\n';
+    let csv = headers.map(h => `"${h}"`).join(',') + '\n';
 
     rows.forEach(row => {
         const values = headers.map(header => {
             let value = row[header] || '';
-            // Escape quotes and wrap in quotes if contains comma, quote, or newline
-            if (value.includes(',') || value.includes('"') || value.includes('\n')) {
-                value = '"' + value.replace(/"/g, '""') + '"';
-            }
-            return value;
+            // Escape quotes by doubling them
+            value = value.replace(/"/g, '""');
+            // Always wrap in quotes
+            return `"${value}"`;
         });
         csv += values.join(',') + '\n';
     });
