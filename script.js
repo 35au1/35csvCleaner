@@ -33,7 +33,7 @@ function handleFileSelect(event) {
             showStatus(`Error: ${error.message}`, 'error');
         }
     };
-    reader.readAsText(file);
+    reader.readAsText(file, 'UTF-8');
 }
 
 function processCSV(csvContent) {
@@ -185,7 +185,9 @@ function showStatus(message, type) {
 function downloadCleanedCSV() {
     if (!processedCSV) return;
 
-    const blob = new Blob([processedCSV], { type: 'text/csv;charset=utf-8;' });
+    // Add UTF-8 BOM for proper encoding in Excel
+    const BOM = '\uFEFF';
+    const blob = new Blob([BOM + processedCSV], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement('a');
     const url = URL.createObjectURL(blob);
     
