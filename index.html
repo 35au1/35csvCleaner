@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patch notes CSV cleaner</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Patch notes CSV cleaner</h1>
+            <p>Clean and filter your Azure DevOps CSV exports</p>
+            <div class="description">
+                <p>This tool processes Azure DevOps CSV exports by:</p>
+                <ul>
+                    <li>Keeping only <strong>Title</strong>, <strong>Description</strong>, and <strong>Closed date</strong> columns</li>
+                    <li>Removing HTML tags from Description field (preserves text content)</li>
+                    <li>Filtering out invalid rows with missing data</li>
+                </ul>
+            </div>
+        </header>
+
+        <div class="workflow">
+            <div class="step">
+                <div class="icon">📁</div>
+                <div class="label">Select CSV</div>
+            </div>
+            <div class="arrow">→</div>
+            <div class="step">
+                <div class="icon">⚙️</div>
+                <div class="label">Process Data</div>
+            </div>
+            <div class="arrow">→</div>
+            <div class="step">
+                <div class="icon">💾</div>
+                <div class="label">Download Clean CSV</div>
+            </div>
+        </div>
+
+        <div class="upload-section">
+            <input type="file" id="fileInput" accept=".csv" />
+            <label for="fileInput" class="file-label">
+                <span class="upload-icon">📤</span>
+                <span>Choose CSV File</span>
+            </label>
+            <div id="fileName" class="file-name"></div>
+        </div>
+
+        <div id="status" class="status"></div>
+
+        <div id="preview" class="preview"></div>
+
+        <button id="downloadBtn" class="download-btn" style="display: none;">
+            <span>💾</span> Download Cleaned CSV
+        </button>
+
+        <div class="info-section">
+            <h3>Patch notes Copilot prompt</h3>
+            <div class="info-content" id="infoContent"></div>
+            <button id="copyBtn" class="copy-btn">
+                <span>📋</span> Copy to Clipboard
+            </button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
