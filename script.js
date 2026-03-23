@@ -70,13 +70,15 @@ function processCSV(csvContent) {
             continue;
         }
 
-        // Clean HTML from description
-        const cleanedDescription = description ? removeHTMLTags(description) : '';
+        // Clean HTML from description and replace quotes with single quotes
+        const cleanedDescription = description ? removeHTMLTags(description).replace(/"/g, "'") : '';
+        const cleanedTitle = title.replace(/"/g, "'");
+        const cleanedClosedDate = closedDate.replace(/"/g, "'");
 
         cleanedRows.push({
-            Title: title,
+            Title: cleanedTitle,
             Description: cleanedDescription,
-            'Closed date': closedDate
+            'Closed date': cleanedClosedDate
         });
         validRows++;
     }
@@ -123,9 +125,13 @@ function parseCSVLine(line) {
 
 function removeHTMLTags(text) {
     // Remove HTML tags and replace with space
-    return text.replace(/<[^>]*>/g, ' ')
-               .replace(/\s+/g, ' ')
-               .trim();
+    let cleaned = text.replace(/<[^>]*>/g, ' ');
+    // Replace &nbsp; and other HTML entities with space
+    cleaned = cleaned.replace(/&nbsp;/gi, ' ');
+    cleaned = cleaned.replace(/&[a-z]+;/gi, ' ');
+    // Normalize multiple spaces to single space
+    cleaned = cleaned.replace(/\s+/g, ' ');
+    return cleaned.trim();
 }
 
 function generateCSV(rows) {
@@ -135,9 +141,7 @@ function generateCSV(rows) {
     rows.forEach(row => {
         const values = headers.map(header => {
             let value = row[header] || '';
-            // Escape quotes by doubling them
-            value = value.replace(/"/g, '""');
-            // Always wrap in quotes
+            // Wrap in quotes (quotes already replaced with single quotes during processing)
             return `"${value}"`;
         });
         csv += values.join(',') + '\n';
