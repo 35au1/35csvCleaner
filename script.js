@@ -37,6 +37,10 @@ function handleFileSelect(event) {
 }
 
 function processCSV(csvContent) {
+    // FIRST: Remove all newline characters from within quoted fields to prevent CSV parsing issues
+    // This handles cases where HTML tags or text contain line breaks
+    csvContent = cleanNewlinesInQuotedFields(csvContent);
+    
     const lines = csvContent.split('\n');
     if (lines.length === 0) {
         showStatus('Error: Empty CSV file', 'error');
@@ -140,6 +144,40 @@ function parseCSVLine(line) {
         }
     }
     result.push(current);
+    
+    return result;
+}
+
+function cleanNewlinesInQuotedFields(csvContent) {
+    // Replace all newlines (CR, LF, CRLF) within quoted fields with spaces
+    // This prevents CSV parsing issues when HTML or text contains line breaks
+    let result = '';
+    let inQuotes = false;
+    
+    for (let i = 0; i < csvContent.length; i++) {
+        const char = csvContent[i];
+        const nextChar = csvContent[i + 1];
+        
+        if (char === '"') {
+            // Check if it's an escaped quote
+            if (inQuotes && nextChar === '"') {
+                result += '""';
+                i++; // Skip next quote
+            } else {
+                inQuotes = !inQuotes;
+                result += char;
+            }
+        } else if (inQuotes && (char === '\r' || char === '\n')) {
+            // Replace newlines inside quotes with space
+            result += ' ';
+            // Skip \r\n combination
+            if (char === '\r' && nextChar === '\n') {
+                i++;
+            }
+        } else {
+            result += char;
+        }
+    }
     
     return result;
 }
