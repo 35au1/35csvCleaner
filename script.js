@@ -51,9 +51,24 @@ function processCSV(csvContent) {
 
     // Process rows
     const cleanedRows = [];
+    const originalTitles = new Set();
     let validRows = 0;
     let invalidRows = 0;
 
+    // First pass - collect all original titles
+    for (let i = 1; i < lines.length; i++) {
+        const line = lines[i].trim();
+        if (!line) continue;
+
+        const columns = parseCSVLine(line);
+        const title = titleIdx !== -1 && columns[titleIdx] ? columns[titleIdx].trim() : '';
+        
+        if (title) {
+            originalTitles.add(title);
+        }
+    }
+
+    // Second pass - process rows and validate against original titles
     for (let i = 1; i < lines.length; i++) {
         const line = lines[i].trim();
         if (!line) continue;
@@ -74,6 +89,12 @@ function processCSV(csvContent) {
         const cleanedDescription = description ? removeHTMLTags(description).replace(/"/g, "'") : '';
         const cleanedTitle = title.replace(/"/g, "'");
         const cleanedClosedDate = closedDate.replace(/"/g, "'");
+
+        // Validate that the cleaned title matches one of the original titles
+        if (title && !originalTitles.has(title)) {
+            invalidRows++;
+            continue;
+        }
 
         cleanedRows.push({
             Title: cleanedTitle,
