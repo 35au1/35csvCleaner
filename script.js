@@ -1,7 +1,17 @@
 let processedCSV = null;
 let processedRows = null;
 
-const INFO_TEXT = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit.';
+const INFO_TEXT = `Przygotuj "Release" notes w formacie lista bulletpointów per sekcja. Każdy element ma status zrealizowany.
+Każdy element powinien mieć maksymalnie 1 zdanie długości.
+Wyeksportuj bez dodatkowych opisów do .doc; pamiętając o UTF – używamy języka polskiego. PRZENANALIZUJ KAŻDE ZDANIE, COPY+PASTE jest nieakceptowalny. Wszystkie informacje jak przetworzyć zdanie i zaklasyfikować masz w tym prompcie. MUSISZ przetworzyć każde zdanie semantycznie i utworzyć podsumowanie. MUSISZ najpierw stworzyć kontent po analizie semantycznej, kroki tworzenia pliku zostaw na później.
+
+sekcja: "1 Nowe funkcjonalności" - bullet point zawiera "Dodano (...)"
+sekcja: "2 Poprawki błędów" - bullet point zawiera "Poprawiono (...)"
+sekcja: "3 Usprawnienia" - bullet point zawiera "Zmodyfikowano (...)" lub słowa zastępcze: zmieniono, zniesiono, dodano
+sekcja: "4 Usunięte" - bullet point zawiera "Usunięto (...)"
+
+Format bullet point: początek frazy zidentyfikowanej sekcja (1,4);
+w bierniku i z małej litery - opis funkcjonalności np. możliwość wykonania czegoś lub element, dokument, etap; miejsce w aplikacji dodania funkcjonalności np. jaka baza danych, jaki formularz, i/lub etap, proces np. na etapie konrektnym lub w ramach określonego procesu; powiązania z systemami, validacje; dodatkowo jeśli istnieje - podsumuj cel biznesowy tej implementacji / dlaczego została zaimplementowana`;
 
 const fileInput = document.getElementById('fileInput');
 const fileName = document.getElementById('fileName');
