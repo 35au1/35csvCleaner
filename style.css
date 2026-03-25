@@ -222,6 +222,15 @@ input[type="file"] {
     margin-right: 8px;
 }
 
+.excel-btn {
+    background: #217346;
+    margin-top: 10px;
+}
+
+.excel-btn:hover {
+    background: #1a5c37;
+}
+
 .info-section {
     margin-top: 40px;
     padding-top: 30px;
@@ -231,6 +240,12 @@ input[type="file"] {
 .info-section h3 {
     color: #333;
     margin-bottom: 15px;
+}
+
+.info-description {
+    color: #555;
+    margin-bottom: 12px;
+    font-size: 0.95em;
 }
 
 .info-content {

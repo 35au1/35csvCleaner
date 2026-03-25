@@ -1,4 +1,5 @@
 let processedCSV = null;
+let processedRows = null;
 
 const INFO_TEXT = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit.';
 
@@ -7,11 +8,13 @@ const fileName = document.getElementById('fileName');
 const status = document.getElementById('status');
 const preview = document.getElementById('preview');
 const downloadBtn = document.getElementById('downloadBtn');
+const downloadExcelBtn = document.getElementById('downloadExcelBtn');
 const infoContent = document.getElementById('infoContent');
 const copyBtn = document.getElementById('copyBtn');
 
 fileInput.addEventListener('change', handleFileSelect);
 downloadBtn.addEventListener('click', downloadCleanedCSV);
+downloadExcelBtn.addEventListener('click', downloadAsExcel);
 copyBtn.addEventListener('click', copyToClipboard);
 
 // Load info content on page load
@@ -115,10 +118,12 @@ function processCSV(csvContent) {
 
     // Generate cleaned CSV
     processedCSV = generateCSV(cleanedRows);
+    processedRows = cleanedRows;
     
     showStatus(`✓ Success! Processed ${validRows} valid rows${invalidRows > 0 ? `, removed ${invalidRows} invalid rows` : ''}`, 'success');
     showPreview(cleanedRows);
     downloadBtn.style.display = 'block';
+    downloadExcelBtn.style.display = 'block';
 }
 
 function parseCSVLine(line) {
@@ -282,4 +287,46 @@ function copyToClipboard() {
     }).catch(err => {
         alert('Failed to copy to clipboard');
     });
+}
+
+function downloadAsExcel() {
+    if (!processedRows) return;
+
+    // Create HTML table for Excel
+    let html = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">';
+    html += '<head><meta charset="utf-8"><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet>';
+    html += '<x:Name>Sheet1</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet>';
+    html += '</x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body>';
+    html += '<table border="1">';
+    
+    // Header
+    html += '<thead><tr>';
+    html += '<th>Title</th><th>Description</th><th>Closed date</th>';
+    html += '</tr></thead>';
+    
+    // Rows
+    html += '<tbody>';
+    processedRows.forEach(row => {
+        html += '<tr>';
+        html += `<td>${escapeHTML(row.Title)}</td>`;
+        html += `<td>${escapeHTML(row.Description)}</td>`;
+        html += `<td>${escapeHTML(row['Closed date'])}</td>`;
+        html += '</tr>';
+    });
+    html += '</tbody></table></body></html>';
+
+    // Create blob and download
+    const blob = new Blob(['\ufeff', html], { type: 'application/vnd.ms-excel' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    
+    link.setAttribute('href', url);
+    link.setAttribute('download', 'cleaned_data.xls');
+    link.style.display = 'none';
+    
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    URL.revokeObjectURL(url);
 }

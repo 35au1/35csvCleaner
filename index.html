@@ -52,11 +52,16 @@
         <div id="preview" class="preview"></div>
 
         <button id="downloadBtn" class="download-btn" style="display: none;">
-            <span>💾</span> Download Cleaned CSV
+            <span>💾</span> Download as CSV
+        </button>
+        
+        <button id="downloadExcelBtn" class="download-btn excel-btn" style="display: none;">
+            <span>📊</span> Download as Excel
         </button>
 
         <div class="info-section">
             <h3>Patch notes Copilot prompt</h3>
+            <p class="info-description">Use this prompt to generate patch notes from the cleaned CSV data.</p>
             <div class="info-content" id="infoContent"></div>
             <button id="copyBtn" class="copy-btn">
                 <span>📋</span> Copy to Clipboard
